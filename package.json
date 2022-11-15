@@ -1,6 +1,6 @@
 {
-  "name": "4",
-  "version": "1.0.0",
+  "name": "ChatManager",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
