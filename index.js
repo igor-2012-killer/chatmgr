@@ -95,7 +95,9 @@ require('fs').writeFileSync('./chats.json', JSON.stringify(chats, null, '\t'));
 }, 10000);
 
 vk.updates.use(async (context, next) => {
+
     if(!context.isChat) return;
+
     if (context.text) {
         console.log(chalk.yellow(`@id${context.senderId}: chatid${ context.isChat ? "#" + context.chatId : "" }, text: ${ context.text.slice(0, 360) }`));
     }
@@ -120,11 +122,12 @@ vk.updates.use(async (context, next) => {
             chatname: 0,
             msg: 0
         }
-}
-   if (!chats[context.chatId].users[context.senderId]) {
-    const [user_info] = await vk.api.users.get({ user_ids: context.senderId });
-    console.log(context.senderId)
-    chats[context.chatId].users[context.senderId] = {
+    }
+    if (!chats[context.chatId].users[context.senderId]) 
+    {
+        const [user_info] = await vk.api.users.get({ user_ids: context.senderId });
+        console.log(context.senderId)
+        chats[context.chatId].users[context.senderId] = {
             rank: 0,
             warns: 0,
             autokick: 0,
@@ -134,40 +137,53 @@ vk.updates.use(async (context, next) => {
             muted: 0,
             msg: 0
         }
-}
-if(context.isGroup){
-    if (!chats[context.chatId].users[context.senderId]) {
-    const [user_info] = await vk.api.groups.getById({ group_id: context.senderId });
-    chats[context.chatId].users[context.senderId] = {
-            rank: 0,
-            warns: 0,
-            autokick: 0,
-            vkid: context.senderId,
-            banned: 0,
-            name: `${user_info.name}`,
-            muted: 0,
-            msg: 0
-        }
-}
-}
-    if(chats[context.chatId].users[context.senderId].muted > 0) {
-    const [user_info] = await vk.api.users.get({ user_ids: context.senderId}); 
-    let b = user_info.id
-context.reply(`*id${user_info.id} (${user_info.first_name} ${user_info.last_name}) написал сообщение при муте и исключается из беседы.`)
-vk.api.messages.removeChatUser({ chat_id: context.chatId, member_id: b}); 
     }
-    if (context.text) {
+    if(context.senderId < 0){
+        if (!chats[context.chatId].users[context.senderId]) {
+            const [user_info] = await vk.api.groups.getById({ group_id: context.senderId });
+            chats[context.chatId].users[context.senderId] = {
+                rank: 0,
+                warns: 0,
+                autokick: 0,
+                vkid: context.senderId,
+                banned: 0,
+                name: `${user_info.name}`,
+                muted: 0,
+                msg: 0
+            }
+        }
+    }
+    if(chats[context.chatId].users[context.senderId].muted > 0) 
+    {
+        const [user_info] = await vk.api.users.get({ user_ids: context.senderId}); 
+
+        let b = user_info.id
+
+        context.reply(`*id${user_info.id} (${user_info.first_name} ${user_info.last_name}) написал сообщение при муте и исключается из беседы.`)
+
+        vk.api.messages.removeChatUser({ chat_id: context.chatId, member_id: b}); 
+    }
+
+    if (context.text) 
+    {
     	chats[context.chatId].msg += Number(1)
+
     	chats[context.chatId].users[context.senderId].msg += Number(1)
     }
-context.user = chats[context.chatId];
+
+    context.user = chats[context.chatId];
     ctx = context;
-try {
 
+    try {
         await next();
- } catch (err) {console.error(err)}
-    require('fs').writeFileSync('./chats.json', JSON.stringify(chats, null, '\t'));
+    } 
+    
+    catch (err) 
+    {
+        console.error(err)
+    }
 
+    require('fs').writeFileSync('./chats.json', JSON.stringify(chats, null, '\t'));
 
 });
 
