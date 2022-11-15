@@ -4,7 +4,7 @@
 this chatmanager have a lot of shitcode, don't use this
 ## libs
 
-- [vk-io](https://github.com/negezor/vk-io) - HTML enhanced for web apps!
+- [vk-io](https://github.com/negezor/vk-io) - best lib for work with vk api!
 - [node.js] - evented I/O for the backend
 
 ## Installation
