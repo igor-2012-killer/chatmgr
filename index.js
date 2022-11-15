@@ -7,33 +7,15 @@ const vk = new VK({
 	apiMode: "parallel", 
 	pollingGroupId:  // ID группы
 }); 
+	
 const { updates } = vk;
 const fs = require('fs');
 const chalk = require('chalk');
 const chats = require('./chats.json')
-const chattest = require('./chattest.json')
 const req = require('request');
-const basa = new Array(chats);
-const moment = require('moment');
 const request = require('request-promise')
 const managerid = ; // ID группы
 
-//--------------------------------------------------------------------------------------------------------//
-const express = require('express')
-const path = require('path')
-
-const app = express()
- 
-app.get('/', function (req, res) {
-  res.send('Hello World')
-})
-
-app.listen(process.env.PORT || 5000, function() {
-    console.log("Server started.......");
-});
-
-
-//--------------------------------------------------------------------------------------------------------//
 
 /*=========================================================================================*/
 
@@ -45,10 +27,6 @@ vk.updates.on('message_new', hearManager.middleware);
 setInterval(function(){ 
         fs.writeFileSync("./chats.json", JSON.stringify(chats, null, "\t")) 
 }, 10000);
-setInterval(function(){ 
-        fs.writeFileSync("./chattest.json", JSON.stringify(chattest, null, "\t")) 
-}, 10000);
-
 
 /*=========================================================================================*/
 const utils = { 
@@ -116,13 +94,6 @@ let chats = require('./chats.json');
 require('fs').writeFileSync('./chats.json', JSON.stringify(chats, null, '\t'));
 }, 10000);
 
-setInterval(() => {
-let chattest = require('./chattest.json');
-require('fs').writeFileSync('./chattest.json', JSON.stringify(chattest, null, '\t'));
-}, 10000);
-
-
-fs.readFile('example_log.txt', function (err, logData) {});
 vk.updates.use(async (context, next) => {
     if(!context.isChat) return;
     if (context.is("message") && context.isOutbox || context.is('message') && context.senderType == "group") return;
