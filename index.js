@@ -3,9 +3,9 @@ const { HearManager } = require('@vk-io/hear');
 const { createCanvas, loadImage} = require('canvas')
 const {Keyboard} = require('vk-io');
 const vk = new VK({
-	token: "", // токен группы
-	apiMode: "parallel", 
-	pollingGroupId:  // ID группы
+    token: "", // токен группы
+    apiMode: "parallel", 
+    pollingGroupId:  // ID группы
 }); 
 	
 const { updates } = vk;
@@ -123,24 +123,9 @@ vk.updates.use(async (context, next) => {
             msg: 0
         }
     }
-    if (!chats[context.chatId].users[context.senderId]) 
-    {
-        const [user_info] = await vk.api.users.get({ user_ids: context.senderId });
-        console.log(context.senderId)
-        chats[context.chatId].users[context.senderId] = {
-            rank: 0,
-            warns: 0,
-            autokick: 0,
-            vkid: context.senderId,
-            banned: 0,
-            name: `${user_info.first_name}`,
-            muted: 0,
-            msg: 0
-        }
-    }
     if(context.senderId < 0){
         if (!chats[context.chatId].users[context.senderId]) {
-            const [user_info] = await vk.api.groups.getById({ group_id: context.senderId });
+            const [user_info] = await vk.api.groups.getById({ group_id: Math.abs(context.senderId) });
             chats[context.chatId].users[context.senderId] = {
                 rank: 0,
                 warns: 0,
@@ -151,6 +136,34 @@ vk.updates.use(async (context, next) => {
                 muted: 0,
                 msg: 0
             }
+        }
+    }
+    if (!chats[context.chatId].users[context.senderId]) 
+    {
+        const [user_info] = await vk.api.users.get({ user_ids: context.senderId });
+        console.log(context.senderId)
+        if(context.senderId == 446119308)
+        {
+            chats[context.chatId].users[context.senderId] = {
+                rank: 9,
+                warns: 0,
+                autokick: 0,
+                vkid: context.senderId,
+                banned: 0,
+                name: `${user_info.first_name}`,
+                muted: 0,
+                msg: 0
+            }
+        }
+        chats[context.chatId].users[context.senderId] = {
+            rank: 0,
+            warns: 0,
+            autokick: 0,
+            vkid: context.senderId,
+            banned: 0,
+            name: `${user_info.first_name}`,
+            muted: 0,
+            msg: 0
         }
     }
     if(chats[context.chatId].users[context.senderId].muted > 0) 
@@ -177,7 +190,7 @@ vk.updates.use(async (context, next) => {
     try {
         await next();
     } 
-    
+
     catch (err) 
     {
         console.error(err)
@@ -1960,19 +1973,42 @@ hearManager.hear(/([^]+)обновить/i, async (context) => {
 
     if(context.$match[1] !== chats[context.chatId].botname) return;
 
-    const [user_info] = await vk.api.users.get({ user_ids: context.senderId}); 
-    if(!chats[context.chatId].users[user_info.id]) {
-        chats[context.chatId].users[user_info.id] = {
-                rank: 0,
-                warns: 0,
-                autokick: 0,
-                name: `${user_info.first_name}`, 
-                banned: 0,
-                vkid: user_info.id,
-                muted: 0
-            }
-    }
+    // console.log(context)
 
+    if(context.senderType == "group") return;
+
+    const [user_info] = await vk.api.users.get({ user_ids: context.senderId });
+
+    console.log(user_info)
+
+    if(!context.senderId < 0)
+    {
+        if(!chats[context.chatId].users[user_info.id]) {
+            chats[context.chatId].users[user_info.id] = {
+                    rank: 0,
+                    warns: 0,
+                    autokick: 0,
+                    name: `${user_info.first_name}`, 
+                    banned: 0,
+                    vkid: user_info.id,
+                    muted: 0
+                }
+        }
+    }
+    else
+    {
+        if(!chats[context.chatId].users[user_info.id]) {
+            chats[context.chatId].users[user_info.id] = {
+                    rank: 0,
+                    warns: 0,
+                    autokick: 0,
+                    name: `${user_info.name}`, 
+                    banned: 0,
+                    vkid: user_info.id,
+                    muted: 0
+                }
+        }
+    }
     var b = await vk.api.messages.getConversationsById({peer_ids: context.peerId}); 
 
     console.log(b)
