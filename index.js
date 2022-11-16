@@ -521,7 +521,13 @@ hearManager.hear(/^(?:([^]+)qr)\s(.*)/i, async (context) => {
   let qr_svg = qr.image(context.$match[1], { type: 'png' });
   qr_svg.pipe(require('fs').createWriteStream('qr.png'));
   var svg_string = qr.imageSync(context.$match[1], { type: 'png' });
-  context.sendPhotos(svg_string)
+  await context.send({
+    attachment: await vk.upload.messagePhoto({
+      source: {
+        value: './qr.png'
+      }
+    })
+  });
 });
 
 hearManager.hear(/([^]+)кто ([^]+)/i, async (context) => {
@@ -1364,11 +1370,25 @@ hearManager.hear(/^(?:([^]+)статусы)$/i, (context) => {
 
   if (top.length < 25) {
     for (let j = 0; j < top.length; j++) {
-      text += (j + 1) + `› *id${top[j].vkid} (${top[j].name}) - ${top[j].balance} 👑\n`
+      if (top[j].vkid > 0)
+      {
+        text += (j + 1) + `› *id${top[j].vkid} (${top[j].name}) - ${top[j].balance} 👑\n`
+      }
+      else
+      {
+        text += (j + 1) + `› *club${Math.abs(top[j].vkid)} (${top[j].name}) - ${top[j].balance} 👑\n`
+      }
     }
   } else {
     for (let j = 0; j < 25; j++) {
-      text += (j + 1) + `› *id${top[j].vkid} (${top[j].name}) - ${top[j].balance} 👑 /\n`
+      if (top[j].vkid > 0)
+      {
+        text += (j + 1) + `› *id${top[j].vkid} (${top[j].name}) - ${top[j].balance} 👑 /\n`
+      }
+      else
+      {
+        text += (j + 1) + `› *club${Math.abs(top[j].vkid)} (${top[j].name}) - ${top[j].balance} 👑 /\n`
+      }
     }
   }
 
