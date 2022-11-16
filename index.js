@@ -536,19 +536,20 @@ hearManager.hear(/([^]+)кто ([^]+)/i, async (context) => {
   let b = await vk.api.messages.getConversationMembers({ peer_id: context.peerId, fields: "users" });
   b = rand(b.items)
   var g = `${b.member_id}`
-  if (g.includes("-")) {
-    const [user_info] = await vk.api.groups.getById({ group_id: g });
 
+  if (g < 0) 
+  {
+    const [user_info] = await vk.api.groups.getById({ group_id: Math.abs(g) });
 
     return context.reply(` ${phrases} ${context.$match[2]} — ${user_info.name}`);
   }
 
-  const [user_info] = await vk.api.users.get({ user_ids: g });
+  else
+  {
+    const [user_info] = await vk.api.users.get({ user_ids: g });
 
-
-
-  context.reply(` ${phrases} ${context.$match[2]} — ${user_info.first_name} ${user_info.last_name}`);
-
+    context.reply(` ${phrases} ${context.$match[2]} — ${user_info.first_name} ${user_info.last_name}`);
+  }
 
 });
 
@@ -560,15 +561,19 @@ hearManager.hear(/([^]+)у кого ([^]+)/i, async (context) => {
   let b = await vk.api.messages.getConversationMembers({ peer_id: context.peerId, fields: "users" });
   b = rand(b.items)
   var g = `${b.member_id}`
-  if (g.includes("-")) {
-    const [user_info] = await vk.api.groups.getById({ group_id: g });
+  if (g < 0) 
+  {
+    const [user_info] = await vk.api.groups.getById({ group_id: Math.abs(g) });
 
     return context.reply(` ${phrases} ${context.$match[2]} — ${user_info.name}`);
   }
 
-  const [user_info] = await vk.api.users.get({ user_ids: g });
+  else
+  {
+    const [user_info] = await vk.api.users.get({ user_ids: g });
 
-  context.reply(` ${phrases}\n ${context.$match[2]} — \n ${user_info.first_name} ${user_info.last_name}`);
+    context.reply(` ${phrases} ${context.$match[2]} — ${user_info.first_name} ${user_info.last_name}`);
+  }
 
 });
 
