@@ -694,7 +694,7 @@ hearManager.hear(/([^]+)нправила ([^]+)/i, async (context) => {
   }
 })
 
-hearManager.hear(/([^]+)префикс ([^]+)/i, async (context) => {
+hearManager.hear(/([^]+)префикс (.+)/i, async (context) => {
 
   if (context.$match[1] !== chats[context.chatId].botname) return;
 
