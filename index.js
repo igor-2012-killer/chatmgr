@@ -1,5 +1,3 @@
-const main = require('./main.js')
-
 const { VK } = require('vk-io');
 const { HearManager } = require('@vk-io/hear');
 const vk = new VK({
