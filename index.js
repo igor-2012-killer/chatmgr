@@ -1,16 +1,16 @@
 const { VK } = require('vk-io');
 const { HearManager } = require('@vk-io/hear');
 const vk = new VK({
-  token: process.env['tokenvk'], // токен группы
+  token: , // токен группы
   apiMode: "parallel",
-  pollingGroupId: process.env['idgroup'] // ID группы
+  pollingGroupId:  // ID группы
 });
 
 const { updates } = vk;
 const fs = require('fs');
 const chalk = require('chalk');
 const chats = require('./chats.json')
-const managerid = process.env['idgroup']; // ID группы
+const managerid = ; // ID группы
 
 
 /*=========================================================================================*/
